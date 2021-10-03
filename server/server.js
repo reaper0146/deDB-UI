@@ -55,12 +55,12 @@ async function initOrbit(){
     
 }
 
-async function orbitAdd(id,name,age){
+async function orbitAdd(id,fname,lname,age, gender){
     
     const db = await orbitDB.docs('test-db')
     await db.load()
     console.log(db.address.toString())
-    await db.put({'_id': id, name: name, age: age}, (err,res) =>{
+    await db.put({'_id': id, fname: fname, lname:lname, age: age, gender:gender}, (err,res) =>{
     if(err){
         res.send({err: err})
 
@@ -72,12 +72,12 @@ async function orbitAdd(id,name,age){
 })
     //console.log("hello")
     
-    //const address = db.address.toString()
+    const address = db.address.toString()
     //console.log(address)
-    //await db.load()
-    //const value = db.query((doc) => doc.age >= 20)
+    await db.load()
+    const value = db.query((doc) => doc.age >= 20)
         
-    //console.log(value)
+    console.log(value)
 }
 
 async function query(age){
@@ -132,11 +132,21 @@ app.post('/register', (req,res)=> {
 
 app.post('/orbitAdd', (req,res)=> {
 
+    //console.log(req)
+
     const id = req.body.id
-    const name = req.body.name
+    const fname = req.body.first_name
+    const lname = req.body.last_name
     const age = parseInt(req.body.age)
-    orbitAdd(id,name,age)
-    res.send({message: "Data added"})
+    const gender = req.body.gender
+    console.log(id)
+    console.log(fname)
+    console.log(lname)
+    console.log(age)
+    console.log(typeof(age))
+    console.log(gender)
+    orbitAdd(id,fname,lname,age, gender)
+    //res.send({message: "Data added"})
 
 })
 

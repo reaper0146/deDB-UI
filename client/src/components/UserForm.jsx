@@ -18,12 +18,10 @@ function UserForm({ user, submitText, submitAction }) {
   return (
     <div>
       <form className="max-w-md mt-4" onSubmit={handleSubmit(submitAction)}>
-        {user && (
-          <section className="field">
+        <section className="flex flex-col field md:flex-row">
             <label htmlFor="id">User Id</label>
-            <input type="text" name="id" value={user.id} disabled />
+            <input type="text" name="id" {...register('id', { required: true })} />
           </section>
-        )}
 
         <section className="flex flex-col field md:flex-row">
           <div>
@@ -46,10 +44,10 @@ function UserForm({ user, submitText, submitAction }) {
         </section>
 
         <section className="field">
-          <label htmlFor="email">Email</label>
+          <label htmlFor="age">Agel</label>
           <input
-            type="email"
-            {...register('email', { required: true, pattern: /^\S+@\S+$/i })}
+            type="number"
+            {...register('age', { required: true})}
           />
           <span className="errors">
             {errors.email &&
