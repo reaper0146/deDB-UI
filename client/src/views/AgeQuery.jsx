@@ -20,9 +20,7 @@ function AgeQuery() {
     console.log(queryAge)
     axios.post('http://localhost:5000/ageQuery',{age:queryAge})
 
-  
     }
-}
 
   return (
     <div>
@@ -41,9 +39,8 @@ function AgeQuery() {
             type="submit"> Query </button>
       </form>
       <Link
-          to="/ageQuery"
-          className="px-4 py-1 font-semibold text-teal-900 border-2 border-teal-700 rounded hover:border-none hover:bg-teal-800 hover:text-white"
-        >
+          to="/ageOldThan"
+          className="px-4 py-1 font-semibold text-teal-900 border-2 border-teal-700 rounded hover:border-none hover:bg-teal-800 hover:text-white">
           Hard query
       </Link>
 

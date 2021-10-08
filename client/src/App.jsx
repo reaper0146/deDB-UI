@@ -29,7 +29,7 @@ function App() {
               <Route path="/" exact>
                 <BasicQuery />
               </Route>
-              <Route path="/ageQuery">
+              <Route path="/ageOldThan">
                 <AgeQuery />
               </Route>
               <Route path="/paginated">
