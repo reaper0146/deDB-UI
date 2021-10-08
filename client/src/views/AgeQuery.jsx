@@ -1,38 +1,34 @@
 import React from 'react'
-import { useQuery } from 'react-query'
-import Axios from 'axios'
 import {useState} from 'react'
+import { useQuery } from 'react-query'
+import { Link } from 'react-router-dom'
 
 import UserTable from '../components/UserTable'
+import axios from 'axios'
 
 function AgeQuery() {
   const [queryAge, setQueryAge] = useState('')
+
   const fetchAllUsers = async () =>
-    await (await fetch('http://localhost:5000/showPatients')).json()
+    await (await fetch('http://localhost:5000/queryAge')).json()
 
   const { data, error, status } = useQuery('users', fetchAllUsers)
 
-  const orbitInit = () => {
-    Axios.post('http://localhost:5000/orbitInit')
-  };
-
-  const fetchAgeUsers = async () =>
-    await (await fetch('http://localhost:5000/queryAge')).json()
-
-  const handleSubmit = async(event) => {
+  const handleSubmit = (event) => {
     event.preventDefault();
     //alert(`The query age was: ${queryAge}`)
     console.log(queryAge)
-    Axios.post('http://localhost:5000/ageQuery',{age:queryAge})
-    const { data, error, status } = useQuery('users', fetchAgeUsers)
-    
-  }
+    axios.post('http://localhost:5000/ageQuery',{age:queryAge})
+
+  
+    }
+}
 
   return (
-
+    <div>
+      <h2 className="mb-4">EHRs Query Example</h2>
       <div>
-        <div>
-          <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit}>
         <label>
           Query patients whose age older than:
           <input 
@@ -43,20 +39,24 @@ function AgeQuery() {
         </label>
         <button className="bg-teal-800 border-teal-800 shadow-md text-white btn hover:bg-gray-100 hover:border-2 hover:text-teal-900"
             type="submit"> Query </button>
-            </form>
-            <link to="/ageQuery"></link>
-
-          
-
+      </form>
+      <Link
+          to="/ageQuery"
+          className="px-4 py-1 font-semibold text-teal-900 border-2 border-teal-700 rounded hover:border-none hover:bg-teal-800 hover:text-white"
+        >
+          Hard query
+      </Link>
 
       </div>
+
+      <div>
         {status === 'error' && <div>{error.message}</div>}
 
         {status === 'loading' && <div>Loading...</div>}
 
         {status === 'success' && <UserTable users={data} />}
       </div>
-      
+    </div>
   )
 }
 

@@ -11,6 +11,7 @@ app.use(express.json())
 app.use(cors())
 
 var orbitDB
+var ageT
 const dbName = 'testDB'
 
 const initIPFSInstance = async () => {
@@ -194,14 +195,24 @@ app.post('/orbitAdd', async (req,res)=> {
 
 })
 
-app.post('/query', (req,res)=> {
+app.post('/ageQuery', async(req,res)=> {
 
     const age = parseInt(req.body.age)
-    const temp = query(age)
+    const temp = await query(age)
+    ageT = temp
     console.log(temp)
     console.log(typeof(temp))
-    res.send(temp)
+    //res.send(temp)
 
+})
+
+app.get('/QueryAge', async (req, res)=>{
+    //await initOrbit()
+    console.log("Query the patients info")
+    const result = await query(ageT)
+    console.log(result)
+    // res.send({users: result})
+    res.json(result)
 })
 
 const PORT=process.env.PORT || 5000;
