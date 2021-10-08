@@ -11,6 +11,7 @@ app.use(express.json())
 app.use(cors())
 
 var orbitDB
+const dbName = 'testDB'
 
 const initIPFSInstance = async () => {
     return await IPFS.create({ repo: "./path-for-js-ipfs-repo" });
@@ -18,13 +19,9 @@ const initIPFSInstance = async () => {
 
 
 async function initOrbit(){
-    const ipfsOptions = {
-        EXPERIMENTAL: {
-          pubsub: true
-        }
-      }
     
-    const ipfs = await IPFS.create(ipfsOptions)  
+    
+    //const ipfs = await IPFS.create(ipfsOptions)  
         //const orbitdb = await OrbitDB.createInstance(ipfs);
       
         // Create / Open a database
@@ -36,8 +33,28 @@ async function initOrbit(){
     
         //const identity = await Identities.createIdentity(options)
         //console.log(identity.toJSON())
-    const db = await OrbitDB.createInstance(ipfs)//,  { identity: identity })
-    orbitDB = db
+    //const db = await OrbitDB.createInstance(ipfs)//,  { identity: identity })
+    //await db.put({'_id': '1', first_name:'Siffre', last_name: 'Timmes', age: 18, gender: 'Male'})
+    //orbitDB = db
+    if(orbitDB == undefined){
+        const ipfsOptions = {
+            EXPERIMENTAL: {
+              pubsub: true
+            }
+          }
+        const ipfs = await IPFS.create(ipfsOptions)
+        orbitDB = await OrbitDB.createInstance(ipfs)
+        // some initial data
+        var db = await orbitDB.docs(dbName)
+        await db.load()
+        console.log("db address:", db.address.toString())
+    
+        }
+    else{
+        db = await orbitDB.docs(dbName)
+        await db.load()
+        console.log("db address:", db.address.toString())
+    }
         
         // Listen for updates from peers
         //db.events.on("replicated", address => {
@@ -55,32 +72,44 @@ async function initOrbit(){
     
 }
 
-async function orbitAdd(id,fname,lname,age, gender){
+async function orbitAdd(value){
+    //await initOrbit()
     
     const db = await orbitDB.docs('test-db')
     await db.load()
     console.log(db.address.toString())
-    await db.put({'_id': id, fname: fname, lname:lname, age: age, gender:gender}, (err,res) =>{
+    await db.put({'_id': value.id, fname: value.first_name, lname:value.last_name, age: value.age, gender:value.gender})/*, (err,res) =>{
     if(err){
         res.send({err: err})
 
     }
     else{
-        res.send({message: "Data added"})
+        res.json({message: "Data added"})
 
     }
-})
+})*/
     //console.log("hello")
     
     const address = db.address.toString()
     //console.log(address)
     await db.load()
-    const value = db.query((doc) => doc.age >= 20)
+    const result = db.get('')
         
-    console.log(value)
+    console.log(result)
+    //res.send(value)
+}
+
+async function showDatabase(){
+    await initOrbit()
+    const db = await orbitDB.docs('test-db')
+    await db.load()
+    const result = await db.get('')
+    //console.log(result)
+    return result
 }
 
 async function query(age){
+    //await initOrbit()
     const db = await orbitDB.docs('test-db')
     await db.load()
     const value = await db.query((doc) => doc.age >= age, (err,res) =>{
@@ -101,9 +130,19 @@ async function query(age){
     //res.send(value)
 }
 
-app.post('/orbitInit', (req,res)=> {
+app.get('/showPatients', async (req, res)=>{
+    //await initOrbit()
+    console.log("Query the patients info")
+    const result = await showDatabase()
+    console.log(result)
+    // res.send({users: result})
+    res.json(result)
+})
+
+
+app.post('/orbitInit',async (req,res)=> {
     //initIPFS()
-    initOrbit()
+    await initOrbit()
 
     /*db.query("INSERT INTO users (username, password) VALUES (?,?)", [username, password], 
     (err,result) => {console.log(err);}
@@ -130,22 +169,27 @@ app.post('/register', (req,res)=> {
     );*/
 })
 
-app.post('/orbitAdd', (req,res)=> {
+app.post('/orbitAdd', async (req,res)=> {
+    await initOrbit()
 
     //console.log(req)
 
-    const id = req.body.id
-    const fname = req.body.first_name
-    const lname = req.body.last_name
-    const age = parseInt(req.body.age)
-    const gender = req.body.gender
-    console.log(id)
-    console.log(fname)
-    console.log(lname)
-    console.log(age)
-    console.log(typeof(age))
-    console.log(gender)
-    orbitAdd(id,fname,lname,age, gender)
+    //const id = req.body.id
+    //const fname = req.body.first_name
+    //const lname = req.body.last_name
+    //const age = parseInt(req.body.age)
+    //const gender = req.body.gender
+    //console.log(id)
+    //console.log(fname)
+    //console.log(lname)
+    //console.log(age)
+    //console.log(typeof(age))
+    //console.log(gender)
+    values = req.body
+    console.log(values.id)
+    await orbitAdd(values)
+    const result = await showDatabase()
+    res.json(result)
     //res.send({message: "Data added"})
 
 })
@@ -160,35 +204,9 @@ app.post('/query', (req,res)=> {
 
 })
 
-app.post('/login', (req,res)=> {
-    const username = req.body.username
-    const password = req.body.password
-
-    console.log(username)
-    console.log(password)
-
-    db.query("SELECT * FROM users username = ? and password = ?", [username, password], 
-    (err,result) => {
-        if(err){
-            console.log(err);
-            res.send({err: err})
-
-        }
-            
-        else{
-            if (result.length>0){
-                res.send(result);
-            } else {
-                res.send({message: "Wrong username or password"});
-            }
-        }
-    }
-    );
-})
-
 const PORT=process.env.PORT || 5000;
 
-app.listen(PORT, ()=>{
+app.listen(PORT, async()=>{
     console.log(`Server is running on ${PORT}` )
 })
 

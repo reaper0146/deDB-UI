@@ -46,10 +46,9 @@ function UserTable({ users }) {
       className="bg-white border border-cyan-800 hover:bg-lime-100 active:bg-lime-700 active:text-lime-100"
       key={index}
     >
-      <td>{user.id}</td>
-      <td>{user.first_name}</td>
-      <td>{user.last_name}</td>
-      <td className="hover:underline">{user.email}</td>
+      <td>{user._id}</td>
+      <td>{user.fname}</td>
+      <td>{user.lname}</td>
       <td>{user.gender}</td>
       <td className="inline-flex border-none">
         <Link
@@ -91,7 +90,6 @@ function UserTable({ users }) {
             <th className="w-1/12">Id</th>
             <th className="w-3/12">First Name</th>
             <th className="w-3/12">Last Name</th>
-            <th className="w-3/12">Email</th>
             <th className="w-1/12">Gender</th>
             <th className="w-1/12">Action</th>
           </tr>

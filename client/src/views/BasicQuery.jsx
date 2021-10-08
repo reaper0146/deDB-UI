@@ -6,7 +6,7 @@ import UserTable from '../components/UserTable'
 
 function BasicQuery() {
   const fetchAllUsers = async () =>
-    await (await fetch('http://localhost:3004/users')).json()
+    await (await fetch('http://localhost:5000/showPatients')).json()
 
   const { data, error, status } = useQuery('users', fetchAllUsers)
 
@@ -15,17 +15,6 @@ function BasicQuery() {
   };
 
   return (
-    <div>
-      <h2 className="mb-4">Basic Query Example</h2>
-      <div>
-        <h1>Init OrbitDB</h1> <br/>
-        <button onClick = {orbitInit}>orbitDB Init</button><br/>
-        </div>
-
-      <form action="user/create">
-    <input type="submit" value="User add" />
-    </form>
-
 
       <div>
         {status === 'error' && <div>{error.message}</div>}
@@ -35,7 +24,6 @@ function BasicQuery() {
         {status === 'success' && <UserTable users={data} />}
       </div>
       
-    </div>
   )
 }
 
