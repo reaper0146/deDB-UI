@@ -197,19 +197,20 @@ app.post('/orbitAdd', async (req,res)=> {
 
 app.post('/ageQuery', async(req,res)=> {
 
+    console.log("Getting the patients info")
     const age = parseInt(req.body.age)
     const temp = await query(age)
     ageT = temp
-    console.log(temp)
-    console.log(typeof(temp))
+    console.log(ageT)
+    //console.log(typeof(temp))
     //res.send(temp)
 
 })
 
 app.get('/QueryAge', async (req, res)=>{
     //await initOrbit()
-    console.log("Query the patients info")
-    const result = await query(ageT)
+    console.log("Sending the patients info")
+    const result = ageT
     console.log(result)
     // res.send({users: result})
     res.json(result)
