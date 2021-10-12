@@ -44,7 +44,7 @@ function UserForm({ user, submitText, submitAction }) {
         </section>
 
         <section className="field">
-          <label htmlFor="age">Agel</label>
+          <label htmlFor="age">Age</label>
           <input
             type="number"
             {...register('age', { required: true})}

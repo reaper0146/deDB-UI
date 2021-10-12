@@ -201,7 +201,7 @@ app.post('/ageQuery', async(req,res)=> {
     const age = parseInt(req.body.age)
     const temp = await query(age)
     ageT = temp
-    console.log(ageT)
+    //console.log(ageT)
     //console.log(typeof(temp))
     //res.send(temp)
 

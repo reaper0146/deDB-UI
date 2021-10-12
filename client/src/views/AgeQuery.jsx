@@ -41,7 +41,7 @@ function AgeQuery() {
       <Link
           to="/ageOldThan"
           className="px-4 py-1 font-semibold text-teal-900 border-2 border-teal-700 rounded hover:border-none hover:bg-teal-800 hover:text-white">
-          Hard query
+          Get query result
       </Link>
 
       </div>
